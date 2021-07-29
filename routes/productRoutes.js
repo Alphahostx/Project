@@ -13,6 +13,6 @@ router
 .route('/:id')
 .get(productController.getProduct)
 .patch(productController.updateProducts)
-.delete(productController.deleteProduct);
+.delete(authController.protect,authController.restrictTo('admin'),productController.deleteProduct);
 
 module.exports = router;
