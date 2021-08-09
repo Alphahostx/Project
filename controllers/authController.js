@@ -5,6 +5,15 @@ const User = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const { token } = require('morgan');
+const cloudinary = require('cloudinary').v2;
+const fileUpload = require("express-fileupload");
+const { result } = require('lodash');
+
+cloudinary.config({
+    cloud_name:'dgtvidcuo',
+    api_key:'779465152135873',
+    api_secret:'S49NBMBGNWIsNRwh10MKV9N1rBM'
+});
 
 const signToken = id => {
     return  jwt.sign({id}, process.env.JWT_SECRET,{
@@ -13,12 +22,24 @@ const signToken = id => {
 }
 
 exports.signup = catchAsync (async (req,res,next) => {
+
+    if(req.files)
+    {
+        const file = req.files.photo;
+        cloudinary.uploader.upload(file.tempFilePath,(err,result)=>{
+            console.log(result);
+        })
+        console.log(req.files)
+        res.send('image uploaded')
+    }
+    
     const newUser = await User.create({
         name:req.body.name,
         email:req.body.email,
         role:req.body.role,
         password:req.body.password,
-        passwordConfirm:req.body.passwordConfirm
+        passwordConfirm:req.body.passwordConfirm,
+        imagePath:result.url
     });
 
     const token = signToken(newUser._id);

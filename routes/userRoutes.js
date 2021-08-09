@@ -6,11 +6,11 @@ const router = express.Router();
 
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
+router.post('/upload',authController.signup);
 
 router
 .route('/')
-.get(userController.getAllUsers)
-.post(userController.createUser);
+.get(userController.getAllUsers);
 router
 .route('/:id')
 .get(userController.getUser)
